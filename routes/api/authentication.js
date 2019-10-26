@@ -131,7 +131,7 @@ router.post('/login', [
 });
 
 router.post('/forgotPassword', [
-    check('login', 'Provide a valid username or email')
+    check('login', 'Provide a valid username or email').not().isEmpty()
 ], async (req, res) => {
     const error = validationResult(req);
     if (error.isEmpty()) {
@@ -149,6 +149,7 @@ router.post('/forgotPassword', [
         }
 
         //todo: send email with a template with a specific token to validate
+        // 1) send an email 
 
 
     } catch (error) {
@@ -161,7 +162,7 @@ router.post('/forgotPassword', [
 });
 
 router.post('/changePassword', authMiddleware, [
-    check('password', 'Provide a valid password'),
+    check('password', 'Provide a valid password').not().isEmpty(),
 ], async (req, res) => {
     const error = validationResult(req);
 
