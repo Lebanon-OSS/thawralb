@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-const broadcastSchema = mongoose.Schema({
-    title: {
+const groupSchema = mongoose.Schema({
+    label: {
         type: String,
         required: true
     },
@@ -9,11 +9,11 @@ const broadcastSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    body: {
+    link: {
         type: String,
         required: true
     },
-    users: {
+    userCreated: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'
     }
@@ -21,4 +21,4 @@ const broadcastSchema = mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('broadcast', broadcastSchema);
+module.exports = mongoose.model('group', groupSchema);

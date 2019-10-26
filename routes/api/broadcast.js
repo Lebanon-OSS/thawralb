@@ -12,7 +12,7 @@ router.post('/add', [
     check('title', 'provide a title for the broadcast').not().isEmpty(),
     check('body', 'provide a body for the broadcast').not().isEmpty(),
     check('description', 'provide a description for the broadcast').not().isEmpty()
-], (req, res) => {
+], async (req, res) => {
 
     const error = validationResult(req);
     if (!error.isEmpty()) {
@@ -23,8 +23,8 @@ router.post('/add', [
 
     try {
 
-        let broadcast = await Broadcast({
-            title, description, body, user: req.user.id
+        let broadcast = await new Broadcast({
+            title, description, body, users: req.user.id
         });
 
         await broadcast.save();
@@ -47,14 +47,14 @@ router.post('/add', [
 router.get('/all', [authMiddleware], async (req, res) => {
     try {
 
-        const braodcast = await Broadcast.find({ createdAt: -1 });
+        const broadData = await Broadcast.find().sort({ createdAt: -1 }).populate('users', 'first_name last_name username');
 
-        if (!broadcast) {
+        if (!broadData) {
             return res.status(httpStatus.BAD_REQUEST).json({ msg: 'No Broadcast available' });
         }
 
 
-        return res.status(httpStatus.OK).json(braodcast);
+        return res.status(httpStatus.OK).json(broadData);
 
 
     } catch (error) {
@@ -65,26 +65,62 @@ router.get('/all', [authMiddleware], async (req, res) => {
     }
 });
 
-router.get('/update', [
+router.put('/update', [
+    authMiddleware,
+    check('id', 'provide the broadcast id').not().isEmpty(),
     check('title', 'provide a title for the broadcast').not().isEmpty(),
     check('body', 'provide a body for the broadcast').not().isEmpty(),
     check('description', 'provide a desscription for the broadcast').not().isEmpty(),
-    authMiddleware], async (req, res) => {
+], async (req, res) => {
 
-        const error = validationResult(req);
-        if (!error.isEmpty()) {
-            return res.status(httpStatus.BAD_REQUEST).json(error.array);
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+        return res.status(httpStatus.BAD_REQUEST).json(error.array);
+    }
+
+    const { id, title, body, description } = req.body;
+
+    try {
+
+        let broadcastData = { title, body, description };
+
+        let broadcastUpdate = await Broadcast.findByIdAndUpdate(id, { $set: broadcastData });
+
+        return res.status(httpStatus.OK).json({
+            status: 'success',
+            data: broadcastUpdate
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.statu
+    }
+});
+
+router.get('/:id', [authMiddleware], async (req, res) => {
+
+    try {
+
+        const specificBroadcast = await Broadcast.findById(req.params.id).populate('users', 'first_name last_name username');
+
+        if (!specificBroadcast) {
+            return res.status(httpStatus.BAD_REQUEST).json({ msg: 'INVALID BROADCAST ID' });
         }
 
-        const { title, body, description } = req.body;
+        return res.status(httpStatus.OK).json({
+            status: 'success',
+            data: specificBroadcast
+        });
 
-        try {
-            
-            
-        } catch (error) {
-            console.log(error);
-            return res.statu
-        }
-    })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(httpStatus.BAD_REQUEST).json({
+            msg: 'INTERNAL SERVER ERROR'
+        });
+    }
+});
+
+
 
 module.exports = router;

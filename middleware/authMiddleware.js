@@ -3,13 +3,13 @@ const httpStatus = require('http-status-codes');
 
 module.exports = (req, res, next) => {
     // get the token from the header
-    let token = req.header('x-auth-header') || req.header['authorization'];
+    let token = req.header('x-auth-header') || req.headers['authorization'];
 
     if (!token) {
         return res.status(httpStatus.UNAUTHORIZED).json({ msg: 'unauthorized' });
     }
 
-    if (token.startWith('Bearer')) {
+    if (token.startsWith('Bearer')) {
         token = token.slice(7, token.length).trimLeft();
     }
 
