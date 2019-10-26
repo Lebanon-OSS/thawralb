@@ -10,8 +10,7 @@ const groupSchema = mongoose.Schema({
         required: true
     },
     link: {
-        type: String,
-        required: true
+        type: String
     },
     userCreated: {
         type: mongoose.Schema.Types.ObjectId,
