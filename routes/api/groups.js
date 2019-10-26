@@ -100,14 +100,12 @@ router.delete('/delete/:id', async (req, res) => {
                 data: deleteGroup
             });
         }
-
     } catch (error) {
         console.log(error);
         return res.status(httpStatus.BAD_REQUEST).json({
             msg: 'INVALID REQUEST'
         });
     }
-
 });
 
 

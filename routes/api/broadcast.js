@@ -4,7 +4,6 @@ const { validationResult, check } = require('express-validator');
 const httpStatus = require('http-status-codes');
 
 const authMiddleware = require('../../middleware/authMiddleware');
-
 const Broadcast = require('../../models/broadcast');
 
 router.post('/add', [
@@ -94,6 +93,26 @@ router.put('/update', [
     } catch (error) {
         console.log(error);
         return res.statu
+    }
+});
+
+router.delete('/delete/:id', [authMiddleware], async (req, res) => {
+    try {
+
+        const deleteBroadcast = await Broadcast.findByIdAndDelete(req.params.id);
+
+        return res.status(httpStatus.BAD_REQUEST).json({
+            msg: 'success',
+            data: {
+                message: 'Successfully deleted a broadcast'
+            }
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(httpStatus.BAD_REQUEST).json({
+            msg: 'INTERNAL SERVER ERROR'
+        });
     }
 });
 
