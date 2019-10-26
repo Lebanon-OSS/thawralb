@@ -71,22 +71,24 @@ router.put('/update', [
         return res.status(httpStatus.BAD_REQUEST).json(error.array);
     }
 
-    const { label, description, link } = req.body;
+    const { id, label, description, link } = req.body;
 
     try {
 
-        let broadcastData = { label, description, link, userCreated: req.user.id };
+        let groupData = { label, description, link, userCreated: req.user.id };
 
-        let broadcastUpdate = await Broadcast.findByIdAndUpdate(id, { $set: broadcastData });
+        let groupUpdate = await Group.findByIdAndUpdate(id, { $set: groupData });
 
         return res.status(httpStatus.OK).json({
             status: 'success',
-            data: broadcastUpdate
+            data: groupUpdate
         });
 
     } catch (error) {
         console.log(error);
-        return res.statu
+        return res.status(httpStatus.BAD_REQUEST).json({
+            msg: 'INVALID REQUEST'
+        });
     }
 });
 
