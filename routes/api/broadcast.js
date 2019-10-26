@@ -75,6 +75,16 @@ router.get('/update', [
         if (!error.isEmpty()) {
             return res.status(httpStatus.BAD_REQUEST).json(error.array);
         }
+
+        const { title, body, description } = req.body;
+
+        try {
+            
+            
+        } catch (error) {
+            console.log(error);
+            return res.statu
+        }
     })
 
 module.exports = router;
